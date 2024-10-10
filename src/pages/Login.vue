@@ -48,6 +48,8 @@ const goToLogin = () => {
   align-items: center;
   flex-direction: column;
 
+  border: 2px solid #6b71ff;
+
   width: 450px;
 
   background-color: #fff;

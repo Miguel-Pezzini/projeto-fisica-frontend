@@ -2,14 +2,15 @@
 defineProps({
   placeholder: String,
   name: String,
-  type: String
+  type: String,
+  value: String,
 })
 </script>
 
 <template>
   <div class="main">
     <mdicon :name="name" />
-    <input :type="type" :placeholder="placeholder" />
+    <input :type="type" :placeholder="placeholder" :value="value"/>
   </div>
 </template>
 

@@ -16,12 +16,12 @@ const goToLogin = () => {
         <p>Você já tem uma? <RouterLink :to="{ name: 'Login' }">Logar</RouterLink></p>
       </div>
       <div>
-        <form class="forms">
+        <form class="forms" @submit.prevent="goToLogin">
           <InputWithIcon placeholder="Usuário" name="account" type="text" />
           <InputWithIcon placeholder="E-mail" name="email" type="text" />
           <InputWithIcon placeholder="Senha" name="key" type="password" />
           <InputWithIcon placeholder="Confirme sua senha" name="key" type="password" />
-          <Button name="Cadastrar" @click="goToLogin" />
+          <Button name="Cadastrar"/>
         </form>
       </div>
     </div>
@@ -47,6 +47,8 @@ const goToLogin = () => {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+
+  border: 2px solid #6b71ff;
 
   width: 500px;
 
