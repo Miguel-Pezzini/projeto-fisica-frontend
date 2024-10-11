@@ -25,14 +25,13 @@ const questions = [{
   correctAnswer : 'B',
   conteudo: 'estatica',
   dificuldades: [3],
-}]
+},
+]
 
 const optionConteudo = ref('cinematica');
 
-const computedQuestions = computed(() => {
-  return questions.filter(question => {
-    return question.conteudo === optionConteudo.value; // Use === para comparação e .value para acessar o valor do ref
-  });
+const computedQuestion = computed(() => {
+  return questions.find(question => question.conteudo === optionConteudo.value) ?? {};
 });
 
 
@@ -53,7 +52,7 @@ const computedQuestions = computed(() => {
         </select>
       </div>
       <div class="div-questions">
-        <Question v-for="question in computedQuestions" :key="question.id" :correctAnswer="question.correctAnswer" :answers="question.answers" :text="question.text" :conteudo="question.conteudo" :dificuldades="question.dificuldades"></Question>
+        <Question :key="computedQuestion.id" :correctAnswer="computedQuestion.correctAnswer" :answers="computedQuestion.answers" :text="computedQuestion.text" :conteudo="computedQuestion.conteudo" :dificuldades="computedQuestion.dificuldades"></Question>
       </div>
     </div>
   </div>
@@ -81,6 +80,7 @@ const computedQuestions = computed(() => {
 select {
   font-size: 20px;
   border-radius: 8px;
+  outline: none;
 }
 select option {
   font-size: 20px;

@@ -91,7 +91,7 @@ const unicoCerto = (elemento) => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" v-if="correctAnswer">
     <div class="div-conteudo">
       <div>Conteúdo: {{rightConteudo()}}</div>
       <button class="button-dificuldade" @click="toggleModal">Dificuldades</button>
@@ -109,18 +109,18 @@ const unicoCerto = (elemento) => {
       {{ text }}
     </div>
     <div class="div-answers">
-      <p :class="{errado: mostrarErrado('A'), certa: mostrarCerto('A') || unicoCerto('A') }"><button class="alternativa-botao" @click="toggleBotao('A')" :class="{ active: alternativas.A}">A</button> {{ answers[0] }} </p>
-      <p :class="{errado: mostrarErrado('B'), certa: mostrarCerto('B') || unicoCerto('B')  }"><button class="alternativa-botao" @click="toggleBotao('B')" :class="{ active: alternativas.B}">B</button> {{ answers[1] }} </p>
-      <p :class="{errado: mostrarErrado('C'), certa: mostrarCerto('C') || unicoCerto('C')  }"><button class="alternativa-botao" @click="toggleBotao('C')" :class="{ active: alternativas.C}">C</button> {{ answers[2] }} </p>
-      <p :class="{errado: mostrarErrado('D'), certa: mostrarCerto('D') || unicoCerto('D')  }"><button class="alternativa-botao" @click="toggleBotao('D')" :class="{ active: alternativas.D}">D</button> {{ answers[3] }} </p>
-      <p :class="{errado: mostrarErrado('E'), certa: mostrarCerto('E') || unicoCerto('E')  }"><button class="alternativa-botao" @click="toggleBotao('E')" :class="{ active: alternativas.E}">E</button> {{ answers[4] }} </p>
+      <p :class="{errado: mostrarErrado('A'), certa: mostrarCerto('A') || unicoCerto('A') }"><button class="alternativa-botao" @click="toggleBotao('A')" :class="{ active: alternativas.A}">A</button> {{ answers[0] ?? '' }} </p>
+      <p :class="{errado: mostrarErrado('B'), certa: mostrarCerto('B') || unicoCerto('B')  }"><button class="alternativa-botao" @click="toggleBotao('B')" :class="{ active: alternativas.B}">B</button> {{ answers[1] ?? '' }} </p>
+      <p :class="{errado: mostrarErrado('C'), certa: mostrarCerto('C') || unicoCerto('C')  }"><button class="alternativa-botao" @click="toggleBotao('C')" :class="{ active: alternativas.C}">C</button> {{ answers[2] ?? '' }} </p>
+      <p :class="{errado: mostrarErrado('D'), certa: mostrarCerto('D') || unicoCerto('D')  }"><button class="alternativa-botao" @click="toggleBotao('D')" :class="{ active: alternativas.D}">D</button> {{ answers[3] ?? '' }} </p>
+      <p :class="{errado: mostrarErrado('E'), certa: mostrarCerto('E') || unicoCerto('E')  }"><button class="alternativa-botao" @click="toggleBotao('E')" :class="{ active: alternativas.E}">E</button> {{ answers[4] ?? '' }} </p>
     </div>
     <div class="div-confirm">
       <button class="button-confirm" @click="confirmarResposta" v-if="!modalAcertou && !modalErrou">Confirmar Resposta</button>
       <p v-if="naoSelecionou" class="errado a15px">Você precisa selecionar uma alternativa</p>
       <div class="final-texts-div">
         <p v-if="modalAcertou" class="certa a15px">Certa resposta!</p>
-        <p v-if="modalErrou" class="errado a15px">Resposta Errada. Alternativa certa: {{ correctAnswer }}</p>
+        <p v-if="modalErrou" class="errado a15px">Resposta Errada. Alternativa certa: {{ correctAnswer ?? '' }}</p>
         <button v-if="modalAcertou || modalErrou" class="button-dificuldade">Próxima Questão</button>
       </div>
     </div>
@@ -181,7 +181,7 @@ div .container {
   padding: 20px; /* Espaçamento interno */
   border-radius: 8px; /* Bordas arredondadas */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra */
-  padding: 35px 35px 35px 35px;
+  padding: 30px 30px 25px 25px;
 }
 .icon-close {
   color: #FF0000;
