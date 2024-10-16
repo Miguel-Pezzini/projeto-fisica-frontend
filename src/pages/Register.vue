@@ -1,10 +1,31 @@
 <script setup>
 import InputWithIcon from '../components/InputWithIcon.vue'
 import Button from '@/components/Button.vue'
+import { ref } from 'vue';
 import router from '@/router'
 
+const username = ref('');
+const email = ref('')
+const password = ref('')
+const passwordAgain = ref('')
+
+const dificuldades = ref([])
+
+let errouSenha = ref(false);
+let senhaPequena = ref(false);
+
 const goToLogin = () => {
-  router.push({ name: 'Home' })
+  console.log(dificuldades.value)
+  if(password.value !== passwordAgain.value) {
+    errouSenha.value = true
+    return
+  }
+  if(password.value.length < 6) {
+    senhaPequena.value = true
+    return
+  }
+  console.log(dificuldades.value)
+  //router.push({ name: 'Home' })
 }
 </script>
 
@@ -17,10 +38,39 @@ const goToLogin = () => {
       </div>
       <div>
         <form class="forms" @submit.prevent="goToLogin">
-          <InputWithIcon placeholder="Usuário" name="account" type="text" />
-          <InputWithIcon placeholder="E-mail" name="email" type="text" />
-          <InputWithIcon placeholder="Senha" name="key" type="password" />
-          <InputWithIcon placeholder="Confirme sua senha" name="key" type="password" />
+          <InputWithIcon placeholder="Usuário" name="account" type="text" v-model="username" />
+          <InputWithIcon placeholder="E-mail" name="email" type="text" v-model="email" />
+          <InputWithIcon placeholder="Senha" name="key" type="password" v-model="password" />
+          <InputWithIcon placeholder="Confirme sua senha" name="key" type="password" v-model="passwordAgain" />
+
+          <h1 style="text-align: center; font-weight: 400;">Minhas dificuldades </h1>
+          <div class="div-inputs-difficult">
+            <div class="checkbox">
+              <input type="checkbox" id="conceptualUnderstanding" name="difficultConceptual" :value="0" v-model="dificuldades">
+              <label for="conceptualUnderstanding">Compreensão Conceitual</label><br>
+            </div>
+            <div class="checkbox">
+              <input type="checkbox" id="problemSolving" name="difficultProblemSolving"  :value="1" v-model="dificuldades">
+              <label for="problemSolving">Resolução de Problemas</label><br>
+            </div>
+            <div class="checkbox">
+              <input type="checkbox" id="mathematicalApplications" name="difficultMathematical"  :value="2" v-model="dificuldades">
+              <label for="mathematicalApplications">Aplicações Matemáticas</label><br>
+            </div>
+            <div class="checkbox">
+              <input type="checkbox" id="textInterpretation" name="difficultInterpretation" :value="3" v-model="dificuldades">
+              <label for="textInterpretation">Interpretação de Texto</label><br>
+            </div>
+            <div class="checkbox">
+              <input type="checkbox" id="theoreticalAnalysis" name="difficultTheoretical" :value="4" v-model="dificuldades">
+              <label for="theoreticalAnalysis">Análise Teórica</label>
+            </div>
+          </div>
+          <div class="div-errors">
+            <p v-if="errouSenha" class="error">As 2 senhas tem que ser iguais</p>
+            <p v-if="senhaPequena" class="error">A senha tem que ter no mínimo 6 caracteres</p>
+          </div>
+            
           <Button name="Cadastrar"/>
         </form>
       </div>
@@ -74,10 +124,18 @@ a {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 30px;
+  gap: 25px;
 }
 .div-form {
   display: flex;
+  gap: 5px;
+}
+.error {
+  color: red;
+}
+.div-errors {
+  display: flex;
+  flex-direction: column;
   gap: 5px;
 }
 </style>

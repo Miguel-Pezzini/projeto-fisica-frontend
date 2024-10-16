@@ -5,7 +5,6 @@ import Button from '@/components/Button.vue';
 
 const user = {
   nome: 'Miguel',
-  senha: '123456',
   email: 'miguel.kuhr@gmail.com',
   dificuldades: [0, 1, 2],
 }
@@ -21,7 +20,6 @@ const user = {
           <div class="div-inputs">
             <InputWithIcon type="text" name="account" placeholder="Usuário" :value="user.nome"/>
             <InputWithIcon type="text" name="email" placeholder="E-mail" :value="user.email"/>
-            <InputWithIcon type="password" name="key" placeholder="Senha" :value="user.senha"/>
           </div>
           <Button name="Alterar Perfil" />
         </form>
