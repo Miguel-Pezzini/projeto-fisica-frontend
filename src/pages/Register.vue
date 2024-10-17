@@ -2,7 +2,8 @@
 import InputWithIcon from '../components/InputWithIcon.vue'
 import Button from '@/components/Button.vue'
 import { ref } from 'vue';
-import router from '@/router'
+import router from '@/router';
+import axios from 'axios';
 
 const username = ref('');
 const email = ref('')
@@ -14,8 +15,8 @@ const dificuldades = ref([])
 let errouSenha = ref(false);
 let senhaPequena = ref(false);
 
-const goToLogin = () => {
-  console.log(dificuldades.value)
+
+const goToLogin = async () => {
   if(password.value !== passwordAgain.value) {
     errouSenha.value = true
     return
@@ -24,7 +25,27 @@ const goToLogin = () => {
     senhaPequena.value = true
     return
   }
-  console.log(dificuldades.value)
+  try {
+    const response = await axios.post('http://localhost:3333/users/register', {
+      username: username.value,
+      email: email.value,
+      password: password.value,
+      dificuldades: dificuldades._rawValue
+      });
+
+        console.log(response)
+  if (!response.ok) {
+      // Handle non-2xx response
+      const errorData = await response.json();
+      // Set appropriate error state based on errorData
+      console.error("Registration failed:", errorData);
+      return;
+    }
+  } catch (error) {
+    console.error("Error during registration:", error);
+    // Handle fetch error (e.g., network issues)
+  }
+  
   //router.push({ name: 'Home' })
 }
 </script>
@@ -80,6 +101,7 @@ const goToLogin = () => {
 
 <style scoped>
 .page {
+  font-family: 'Roboto';
   background-color: #ececec;
   height: 100vh;
   width: 100%;
@@ -137,5 +159,17 @@ a {
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+.div-inputs-difficult {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.div-inputs-difficult label {
+  font-size: 20px;
+}
+.checkbox {
+  display: flex;
+  gap: 8px;
 }
 </style>
