@@ -3,7 +3,6 @@ import InputWithIcon from '../components/InputWithIcon.vue'
 import Button from '@/components/Button.vue'
 import { ref } from 'vue';
 import router from '@/router';
-import axios from 'axios';
 
 const username = ref('');
 const email = ref('')
@@ -12,41 +11,83 @@ const passwordAgain = ref('')
 
 const dificuldades = ref([])
 
-let errouSenha = ref(false);
-let senhaPequena = ref(false);
+const errors = ref({
+  errouSenha: false,
+  senhaPequena: false,
+  usernamePequeno: false,
+  emailInvalido: false,
+  dificuldadesInvalido: false
+})
 
+const register = async () => {
+  const validacoes = [
+  () => {
+    if (password.value !== passwordAgain.value) {
+      errors.errouSenha = true;
+    }
+  },
+  () => {
+    if (password.value.length < 6) {
+      errors.senhaPequena = true;
+    }
+  },
+  () => {
+    if (username.value.length < 5) {
+      errors.usernamePequeno = true;
+    }
+  },
+  () => {
+    if (email.value.length < 7) {
+      errors.emailInvalido = true;
+    }
+  },
+  () => {
+    if (!dificuldades._rawValue[0]) {
+      errors.dificuldadesInvalido = true;
+    }
+  }
+];
 
-const goToLogin = async () => {
-  if(password.value !== passwordAgain.value) {
-    errouSenha.value = true
-    return
-  }
-  if(password.value.length < 6) {
-    senhaPequena.value = true
-    return
-  }
+// Executar validações
+validacoes.forEach(validacao => validacao());
+
+// Verificar se houve erros
+if (Object.values(errors).some(error => error)) {
+  // Aqui você pode manipular os erros como quiser
+  errors.value.errouSenha = errors.errouSenha;
+  errors.value.senhaPequena = errors.senhaPequena;
+  errors.value.usernamePequeno = errors.usernamePequeno;
+  errors.value.emailInvalido = errors.emailInvalido;
+  errors.value.dificuldadesInvalido = errors.dificuldadesInvalido;
+
+  console.log(errors.value)
+  
+  return; // Interromper a execução se houver erros
+}
   try {
-    const response = await axios.post('http://localhost:3333/users/register', {
-      username: username.value,
-      email: email.value,
-      password: password.value,
-      dificuldades: dificuldades._rawValue
-      });
+    const response = await fetch('http://localhost:3000/users/register', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        username: username.value,
+        email: email.value,
+        password: password.value,
+        dificuldades: dificuldades._rawValue
+      })
+    });
 
-        console.log(response)
-  if (!response.ok) {
-      // Handle non-2xx response
-      const errorData = await response.json();
-      // Set appropriate error state based on errorData
-      console.error("Registration failed:", errorData);
-      return;
+    const data = await response.json()
+    
+    if (response.ok && data.success) {
+      router.push({ name: 'Home' });
+    } else {
+      console.error("Login failed:", data.message || "Unknown error");
     }
   } catch (error) {
     console.error("Error during registration:", error);
     // Handle fetch error (e.g., network issues)
   }
   
-  //router.push({ name: 'Home' })
 }
 </script>
 
@@ -58,7 +99,7 @@ const goToLogin = async () => {
         <p>Você já tem uma? <RouterLink :to="{ name: 'Login' }">Logar</RouterLink></p>
       </div>
       <div>
-        <form class="forms" @submit.prevent="goToLogin">
+        <form class="forms" @submit.prevent="register">
           <InputWithIcon placeholder="Usuário" name="account" type="text" v-model="username" />
           <InputWithIcon placeholder="E-mail" name="email" type="text" v-model="email" />
           <InputWithIcon placeholder="Senha" name="key" type="password" v-model="password" />
@@ -88,10 +129,12 @@ const goToLogin = async () => {
             </div>
           </div>
           <div class="div-errors">
-            <p v-if="errouSenha" class="error">As 2 senhas tem que ser iguais</p>
-            <p v-if="senhaPequena" class="error">A senha tem que ter no mínimo 6 caracteres</p>
-          </div>
-            
+            <p v-if="errors.errouSenha" class="error">As 2 senhas tem que ser iguais</p>
+            <p v-if="errors.senhaPequena" class="error">A senha tem que ter no mínimo 6 caracteres</p>
+            <p v-if="errors.usernamePequeno" class="error">O nome do usuário deve ter mais de 5 caracteres</p>
+            <p v-if="errors.emailInvalido" class="error">O E-mail é inválido</p>
+            <p v-if="errors.dificuldadesInvalido" class="error">Marque alguma dificuldade</p>
+          </div>  
           <Button name="Cadastrar"/>
         </form>
       </div>
@@ -112,8 +155,6 @@ const goToLogin = async () => {
 .container {
   gap: 35px;
   border-radius: 10px;
-
-  margin-bottom: 100px;
 
   display: flex;
   justify-content: center;
