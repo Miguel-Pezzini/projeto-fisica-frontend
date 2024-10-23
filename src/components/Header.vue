@@ -1,4 +1,11 @@
-<script setup></script>
+<script setup>
+import router from '@/router'
+
+  const Logout = () => {
+    localStorage.removeItem('jwtToken');
+    router.push({name: 'Login'})
+  }
+</script>
 
 <template>
   <header>
@@ -8,7 +15,7 @@
         <RouterLink :to="{name: 'Home' }">Ranking</RouterLink>
         <RouterLink :to="{name: 'Atividades' }">Atividades</RouterLink>
         <RouterLink :to="{name: 'Perfil' }">Meu perfil</RouterLink>
-        <RouterLink :to="{name: 'Login'}">Sair</RouterLink>
+        <a @click="Logout">Sair</a>
       </ul>
     </div>
   </header>

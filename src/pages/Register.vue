@@ -20,50 +20,48 @@ const errors = ref({
 })
 
 const register = async () => {
+  // Limpar erros antes de novas validações
+  Object.keys(errors.value).forEach(key => {
+    errors.value[key] = false;
+  });
+
   const validacoes = [
-  () => {
-    if (password.value !== passwordAgain.value) {
-      errors.errouSenha = true;
+    () => {
+      if (password.value !== passwordAgain.value) {
+        errors.value.errouSenha = true;
+      }
+    },
+    () => {
+      if (password.value.length < 6) {
+        errors.value.senhaPequena = true;
+      }
+    },
+    () => {
+      if (username.value.length < 5) {
+        errors.value.usernamePequeno = true;
+      }
+    },
+    () => {
+      if (email.value.length < 7) {
+        errors.value.emailInvalido = true;
+      }
+    },
+    () => {
+      if (!dificuldades.value[0]) {
+        errors.value.dificuldadesInvalido = true;
+      }
     }
-  },
-  () => {
-    if (password.value.length < 6) {
-      errors.senhaPequena = true;
-    }
-  },
-  () => {
-    if (username.value.length < 5) {
-      errors.usernamePequeno = true;
-    }
-  },
-  () => {
-    if (email.value.length < 7) {
-      errors.emailInvalido = true;
-    }
-  },
-  () => {
-    if (!dificuldades._rawValue[0]) {
-      errors.dificuldadesInvalido = true;
-    }
+  ];
+
+  // Executar validações
+  validacoes.forEach(validacao => validacao());
+
+  // Verificar se houve erros
+  if (Object.values(errors.value).some(error => error)) {
+    console.log(errors.value);
+    return; // Interromper a execução se houver erros
   }
-];
 
-// Executar validações
-validacoes.forEach(validacao => validacao());
-
-// Verificar se houve erros
-if (Object.values(errors).some(error => error)) {
-  // Aqui você pode manipular os erros como quiser
-  errors.value.errouSenha = errors.errouSenha;
-  errors.value.senhaPequena = errors.senhaPequena;
-  errors.value.usernamePequeno = errors.usernamePequeno;
-  errors.value.emailInvalido = errors.emailInvalido;
-  errors.value.dificuldadesInvalido = errors.dificuldadesInvalido;
-
-  console.log(errors.value)
-  
-  return; // Interromper a execução se houver erros
-}
   try {
     const response = await fetch('http://localhost:3000/users/register', {
       method: 'POST',
@@ -79,6 +77,8 @@ if (Object.values(errors).some(error => error)) {
     const data = await response.json()
     
     if (response.ok && data.success) {
+      const token = data.token;
+      localStorage.setItem('jwtToken', token)
       router.push({ name: 'Home' });
     } else {
       console.error("Login failed:", data.message || "Unknown error");
@@ -87,8 +87,7 @@ if (Object.values(errors).some(error => error)) {
     console.error("Error during registration:", error);
     // Handle fetch error (e.g., network issues)
   }
-  
-}
+};
 </script>
 
 <template>

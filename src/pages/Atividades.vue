@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 import Header from '@/components/Header.vue';
 import Question from '@/components/Question.vue';
 const questions = [{
@@ -30,6 +30,42 @@ const questions = [{
 
 const optionConteudo = ref('cinematica');
 
+const question = ref({})
+
+const fetchQuestion = async () => {
+  try {
+    const token = localStorage.getItem('jwtToken');
+
+    const response = await fetch('http://localhost:3000/questions/fetchQuestions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      }, 
+      body: JSON.stringify({
+        conteudo: optionConteudo.value
+      })
+    });
+
+    const data = await response.json();
+    
+    if (!response.ok && !data.success) {
+      console.error("Login failed:", data.message || "Unknown error");
+    } 
+
+    question.value = data.question;
+    
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
+}
+
+watch(optionConteudo, (newValue) => {
+  fetchQuestion(); // Chama a função sempre que optionConteudo mudar
+});
+
+fetchQuestion
+
 const computedQuestion = computed(() => {
   return questions.find(question => question.conteudo === optionConteudo.value) ?? {};
 });
@@ -52,7 +88,7 @@ const computedQuestion = computed(() => {
         </select>
       </div>
       <div class="div-questions">
-        <Question :key="computedQuestion.id" :correctAnswer="computedQuestion.correctAnswer" :answers="computedQuestion.answers" :text="computedQuestion.text" :conteudo="computedQuestion.conteudo" :dificuldades="computedQuestion.dificuldades"></Question>
+        <Question v-if="question" :key="question.id" :correctAnswer="question.correctAnswer" :answers="question.answers" :text="question.text" :conteudo="question.conteudo" :dificuldades="question.dificuldades"></Question>
       </div>
     </div>
   </div>

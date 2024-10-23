@@ -27,12 +27,11 @@ const login = async () => {
     });
 
     const data = await response.json()
-
-    console.log(response.ok)
-    console.log(data.success)
     
     if (response.ok && data.success) {
       router.push({ name: 'Home' });
+      const token = data.token;
+      localStorage.setItem('jwtToken', token)
     } else {
       loginErrado.value = true
       console.error("Login failed:", data.message || "Unknown error");
