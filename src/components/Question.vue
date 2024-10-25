@@ -5,8 +5,34 @@ const props = defineProps({
   answers: Array,
   conteudo: String,
   dificuldades: Array,
-  correctAnswer: String
+  correctAnswer: String,
+  points: Number,
 })
+
+const somarPontos = async () => {
+  console.log('b')
+  try {
+    const token = localStorage.getItem('jwtToken');
+
+    const response = await fetch('http://localhost:3000/questions/correctAnswer', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      }, 
+      body: JSON.stringify({
+        points: props.points,
+      })
+    });
+
+    const data = await response.text();
+
+    console.log(data)
+    
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
 
 const rightConteudo = ref(() => {
   if(props.conteudo === 'cinematica') return 'Cinemática'
@@ -26,11 +52,11 @@ const rightDificuldade = ref((dificuldade) => {
 })
 
 const alternativas = ref({
-  A: false,
-  B: false,
-  C: false,
-  D: false,
-  E: false,
+  a: false,
+  b: false,
+  c: false,
+  d: false,
+  e: false,
 });
 
 const selecionado = ref('');
@@ -55,14 +81,13 @@ const toggleModal = () => {
       modal.value = !modal.value;
 }
 
-
-
 const confirmarResposta = () => {
   if(selecionado.value == '') {
     naoSelecionou.value = true
     return;
   }
   if(selecionado.value === props.correctAnswer) {
+    somarPontos()
     naoSelecionou.value = false
     modalAcertou.value = true
   } else {
@@ -88,6 +113,12 @@ const unicoCerto = (elemento) => {
   }
   return false
 }
+
+const emit = defineEmits();
+
+const nextQuestion = () => {
+  emit('send-data', true); // Emitindo o evento
+};
 </script>
 
 <template>
@@ -109,11 +140,11 @@ const unicoCerto = (elemento) => {
       {{ text }}
     </div>
     <div class="div-answers">
-      <p :class="{errado: mostrarErrado('A'), certa: mostrarCerto('A') || unicoCerto('A') }"><button class="alternativa-botao" @click="toggleBotao('A')" :class="{ active: alternativas.A}">A</button> {{ answers[0] ?? '' }} </p>
-      <p :class="{errado: mostrarErrado('B'), certa: mostrarCerto('B') || unicoCerto('B')  }"><button class="alternativa-botao" @click="toggleBotao('B')" :class="{ active: alternativas.B}">B</button> {{ answers[1] ?? '' }} </p>
-      <p :class="{errado: mostrarErrado('C'), certa: mostrarCerto('C') || unicoCerto('C')  }"><button class="alternativa-botao" @click="toggleBotao('C')" :class="{ active: alternativas.C}">C</button> {{ answers[2] ?? '' }} </p>
-      <p :class="{errado: mostrarErrado('D'), certa: mostrarCerto('D') || unicoCerto('D')  }"><button class="alternativa-botao" @click="toggleBotao('D')" :class="{ active: alternativas.D}">D</button> {{ answers[3] ?? '' }} </p>
-      <p :class="{errado: mostrarErrado('E'), certa: mostrarCerto('E') || unicoCerto('E')  }"><button class="alternativa-botao" @click="toggleBotao('E')" :class="{ active: alternativas.E}">E</button> {{ answers[4] ?? '' }} </p>
+      <p :class="{errado: mostrarErrado('a'), certa: mostrarCerto('a') || unicoCerto('a') }"><button class="alternativa-botao" @click="toggleBotao('a')" :class="{ active: alternativas.a}">A</button> {{ answers[0] ?? '' }} </p>
+      <p :class="{errado: mostrarErrado('b'), certa: mostrarCerto('b') || unicoCerto('b')  }"><button class="alternativa-botao" @click="toggleBotao('b')" :class="{ active: alternativas.b}">B</button> {{ answers[1] ?? '' }} </p>
+      <p :class="{errado: mostrarErrado('c'), certa: mostrarCerto('c') || unicoCerto('c')  }"><button class="alternativa-botao" @click="toggleBotao('c')" :class="{ active: alternativas.c}">C</button> {{ answers[2] ?? '' }} </p>
+      <p :class="{errado: mostrarErrado('d'), certa: mostrarCerto('d') || unicoCerto('d')  }"><button class="alternativa-botao" @click="toggleBotao('d')" :class="{ active: alternativas.d}">D</button> {{ answers[3] ?? '' }} </p>
+      <p :class="{errado: mostrarErrado('e'), certa: mostrarCerto('e') || unicoCerto('e')  }"><button class="alternativa-botao" @click="toggleBotao('e')" :class="{ active: alternativas.e}">E</button> {{ answers[4] ?? '' }} </p>
     </div>
     <div class="div-confirm">
       <button class="button-confirm" @click="confirmarResposta" v-if="!modalAcertou && !modalErrou">Confirmar Resposta</button>
@@ -121,7 +152,7 @@ const unicoCerto = (elemento) => {
       <div class="final-texts-div">
         <p v-if="modalAcertou" class="certa a15px">Certa resposta!</p>
         <p v-if="modalErrou" class="errado a15px">Resposta Errada. Alternativa certa: {{ correctAnswer ?? '' }}</p>
-        <button v-if="modalAcertou || modalErrou" class="button-dificuldade">Próxima Questão</button>
+        <button v-if="modalAcertou || modalErrou" class="button-dificuldade" @click="nextQuestion">Próxima Questão</button>
       </div>
     </div>
   </div>
