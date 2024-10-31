@@ -25,7 +25,7 @@ const fetchQuestion = async () => {
     const data = await response.json();
     
     if (!response.ok && !data.success) {
-      console.error("Login failed:", data.message || "Unknown error");
+      console.error(data.message || "Unknown error");
     } 
 
     question.value = data.question;
@@ -36,6 +36,7 @@ const fetchQuestion = async () => {
 }
 
 const handleDataFromChild = (data) => {
+console.log(data)
   if(data) {
     fetchQuestion()
   }
@@ -64,7 +65,8 @@ fetchQuestion()
         </select>
       </div>
       <div class="div-questions">
-        <Question @send-data="handleDataFromChild" v-if="question" :points="question.points" :key="question.id" :correctAnswer="question.correctAnswer" :answers="question.answers" :text="question.text" :conteudo="question.conteudo" :dificuldades="question.dificuldades"></Question>
+        <Question @send-data="handleDataFromChild" v-if="question" :points="question.points" :id="question.id" :key="question.id" :correctAnswer="question.correctAnswer" :answers="question.answers" :text="question.text" :conteudo="question.conteudo" :dificuldades="question.dificuldades"></Question>
+        <p v-if="!question" class="div-questions-p">Nenhuma questão disponível</p>
       </div>
     </div>
   </div>
@@ -95,6 +97,13 @@ select {
   outline: none;
 }
 select option {
+  font-size: 20px;
+}
+
+.div-questions-p {
+  position: absolute;
+  top: 45%;
+  font-family: 'Roboto';
   font-size: 20px;
 }
 

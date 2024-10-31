@@ -7,12 +7,15 @@ const props = defineProps({
   dificuldades: Array,
   correctAnswer: String,
   points: Number,
+  id: String
 })
 
 const somarPontos = async () => {
   console.log('b')
   try {
     const token = localStorage.getItem('jwtToken');
+
+    console.log(props.id)
 
     const response = await fetch('http://localhost:3000/questions/correctAnswer', {
       method: 'POST',
@@ -21,6 +24,7 @@ const somarPontos = async () => {
         'Authorization': `Bearer ${token}`,
       }, 
       body: JSON.stringify({
+        questionId: props.id,
         points: props.points,
       })
     });

@@ -4,6 +4,7 @@ import Login from '@/pages/Login.vue'
 import Home from '@/pages/Home.vue'
 import Perfil from '@/pages/Perfil.vue'
 import Atividades from '@/pages/Atividades.vue'
+import Historico from '@/pages/Historico.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,6 +35,12 @@ const router = createRouter({
       path: '/atividades',
       name: 'Atividades',
       component: Atividades,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/historico',
+      name: 'Historico',
+      component: Historico,
       meta: { requiresAuth: true }
     },
   ]
