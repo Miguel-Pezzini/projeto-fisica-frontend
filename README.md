@@ -26,12 +26,14 @@ Para um desenvolvimento eficiente, sugerimos a utilização do seguinte ambiente
 
 2. **Rodando o servidor de desenvolvimento**:
 
-  Para rodar o projeto localmente e ver as alterações em tempo real, utilize:
+    Para rodar o projeto localmente e ver as alterações em tempo real, utilize:
   
-    npm run dev
+   ```sh
+   npm run dev
 
 3. **Compilando o projeto para produção**:
 
-  Para gerar a versão otimizada do projeto para produção, execute:
+    Para gerar a versão otimizada do projeto para produção, execute:
 
+    ```sh
     npm run build
